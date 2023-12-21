@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_login_auth_getx/controllers/login_controller.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -26,7 +27,17 @@ class _HomeScreenState extends State<HomeScreen> {
   // }
 
   @override
+  void initState() {
+    Get.put(LoginController());
+    // getLoginOps();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final LoginController loginController = Get.find();
+    final tokenValue = loginController;
+    print('tokenValue=> ${tokenValue.tokenValue}');
     return Scaffold(
       appBar: AppBar(actions: [
         TextButton(

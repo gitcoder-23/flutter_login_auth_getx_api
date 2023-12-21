@@ -13,6 +13,15 @@ class LoginController extends GetxController {
   TextEditingController passwordController = TextEditingController();
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
+  RxString tokenValue = ''.obs;
+
+  LoginController() {
+    _prefs.then((value) {
+      print('value.getString=> ${value.getString('token')}');
+      tokenValue = RxString(value.getString('token') ?? '');
+    });
+  }
+
   Future<void> loginWithEmail() async {
     var headers = {'Content-Type': 'application/json'};
     try {
@@ -29,6 +38,7 @@ class LoginController extends GetxController {
         final json = jsonDecode(response.body);
         if (json['code'] == 0) {
           var token = json['data']['Token'];
+          tokenValue = RxString(token);
           final SharedPreferences prefs = await _prefs;
           await prefs.setString('token', token);
 
