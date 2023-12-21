@@ -15,10 +15,13 @@ class LoginController extends GetxController {
 
   RxString tokenValue = ''.obs;
 
+  dynamic localUser = {}.obs;
+
   LoginController() {
     _prefs.then((value) {
-      print('value.getString=> ${value.getString('token')}');
+      print('value.userLoginC=> ${value.getString('userdata')}');
       tokenValue = RxString(value.getString('token') ?? '');
+      localUser = jsonDecode(value.getString('userdata') ?? '') ?? {};
     });
   }
 
@@ -37,14 +40,26 @@ class LoginController extends GetxController {
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
         if (json['code'] == 0) {
-          var token = json['data']['Token'];
-          tokenValue = RxString(token);
           final SharedPreferences prefs = await _prefs;
+          var userData = json['data'];
+          // final user = jsonEncode({'userData': userData});
+          final user = jsonEncode(userData);
+          print('user=> $user');
+
+          await prefs.setString('userdata', user);
+          var token = json['data']['Token'];
+          // tokenValue = RxString(token);
+          // final SharedPreferences prefs = await _prefs;
           await prefs.setString('token', token);
 
           emailController.clear();
           passwordController.clear();
-          Get.off(const HomeScreen());
+
+          // Wait for SharedPreferences to be updated before navigating
+          await Future.delayed(
+              const Duration(milliseconds: 500)); // You can adjust the duration
+
+          Get.off(HomeScreen(userDetail: userData));
         } else if (json['code'] == 1) {
           throw jsonDecode(response.body)['message'];
         }
@@ -63,5 +78,15 @@ class LoginController extends GetxController {
             );
           });
     }
+  }
+
+  ///
+  /// LOGOUT the User
+  /// And Clears the Shared Preference
+  Future<void> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('token');
+    await prefs.remove('userdata');
+    await prefs.clear();
   }
 }

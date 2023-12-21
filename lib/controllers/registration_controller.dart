@@ -3,6 +3,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_login_auth_getx/screens/auth/auth_screen.dart';
 import 'package:flutter_login_auth_getx/screens/home_screen.dart';
 import 'package:flutter_login_auth_getx/utils/api_endpoints.dart';
 import 'package:get/get.dart';
@@ -45,7 +46,7 @@ class RegistrationController extends GetxController {
           nameController.clear();
           emailController.clear();
           passwordController.clear();
-          Get.off(const HomeScreen());
+          Get.off(const AuthScreen());
         } else {
           throw jsonDecode(response.body)["message"] ?? "Unknown Error Occured";
         }

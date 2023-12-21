@@ -8,7 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'auth/auth_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  final dynamic userDetail;
+  const HomeScreen({required this.userDetail, Key? key}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -37,7 +38,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final LoginController loginController = Get.find();
     final tokenValue = loginController;
-    print('tokenValue=> ${tokenValue.tokenValue}');
+    print('userDetail=> ${widget.userDetail}');
+    final userName = widget.userDetail['Name'];
     return Scaffold(
       appBar: AppBar(actions: [
         TextButton(
@@ -55,6 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           children: [
             const Text('Welcome home'),
+            Text(userName),
             TextButton(
                 onPressed: () async {
                   final SharedPreferences prefs = await _prefs;

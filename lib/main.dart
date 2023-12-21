@@ -13,6 +13,7 @@ Future<void> loadTokenFromStorage() async {
   final prefs = await SharedPreferences.getInstance();
   // newTokenValue.value = prefs.getString('token') ?? '';
   prefs.getString('token') ?? '';
+  prefs.getString('userdata') ?? '';
 }
 
 void main() async {
@@ -38,6 +39,7 @@ class MyApp extends StatelessWidget {
     final LoginController loginController = Get.find();
     final tokenData = loginController;
     print('tokenValue-main=> ${tokenData.tokenValue}');
+    print('user-main=> ${tokenData.localUser}');
 
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
@@ -48,7 +50,7 @@ class MyApp extends StatelessWidget {
       home: Obx(() {
         print('main.tokenData.tokenValue=> ${tokenData.tokenValue}');
         return tokenData.tokenValue.isNotEmpty
-            ? const HomeScreen()
+            ? HomeScreen(userDetail: tokenData.localUser)
             : const AuthScreen();
       }),
     );
